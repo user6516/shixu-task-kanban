@@ -1,0 +1,12 @@
+<script setup>
+import { Plus } from 'lucide-vue-next'
+import { ref } from 'vue'
+import TaskCard from './TaskCard.vue'
+import EmptyState from './EmptyState.vue'
+defineProps({column:Object,taskList:Array,filtered:Boolean})
+const emit=defineEmits(['move','toggle','remove','add'])
+const over=ref(false)
+function drop(e,col){over.value=false;const id=e.dataTransfer.getData('text/plain');if(id)emit('move',id,col)}
+</script>
+<template><section class="kanban-column" :class="{over}" @dragover.prevent="over=true" @dragleave.self="over=false" @drop.prevent="drop($event,column.id)"><header><div class="column-name"><i :style="{background:column.color}"></i><h2>{{column.title}}</h2><span>{{taskList.length.toString().padStart(2,'0')}}</span></div><button class="icon-btn" :aria-label="'在'+column.title+'中新增任务'" @click="emit('add',column.id)"><Plus :size="17"/></button></header><p class="column-hint">{{column.subtitle}}</p><div class="card-list"><TaskCard v-for="task in taskList" :key="task.id" :task="task" @toggle="(id,flag)=>emit('toggle',id,flag)" @remove="id=>emit('remove',id)" @move="(id,col)=>emit('move',id,col)"/><EmptyState v-if="!taskList.length" :title="filtered?'没有匹配的任务':undefined" :hint="filtered?'试试其他关键词或筛选条件':undefined" @action="emit('add',column.id)"/><button v-if="taskList.length" class="column-add" @click="emit('add',column.id)"><Plus :size="14"/>添加任务</button></div></section></template>
+<style scoped>.kanban-column{background:var(--column);padding:19px 17px;min-height:485px;border-radius:17px;border:1px solid transparent;transition:background .2s,border-color .2s}.over{border-color:var(--accent);background:var(--tag)}header{display:flex;align-items:center;justify-content:space-between;padding:0 4px}.column-name{display:flex;align-items:center;gap:9px}.column-name i{width:7px;height:7px;border-radius:50%}h2{font-size:14px;margin:0;font-weight:600}.column-name span{font-size:10px;background:var(--count);padding:3px 6px;border-radius:5px;color:var(--muted);margin-left:3px;font-variant-numeric:tabular-nums}.column-hint{font-size:10px;color:var(--muted);margin:1px 0 21px 20px}.card-list{display:flex;flex-direction:column;gap:13px}.column-add{display:flex;justify-content:center;align-items:center;gap:5px;padding:13px;width:100%;background:none;border:1px dashed var(--line);border-radius:10px;color:var(--muted);font-size:11px}.column-add:hover{color:var(--accent);border-color:var(--accent)}@media(max-width:760px){.kanban-column{min-height:230px}}</style>

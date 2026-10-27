@@ -1,0 +1,7 @@
+<script setup>
+import { CheckCircle2, X, CircleAlert } from 'lucide-vue-next'
+import { useToast } from '../composables/useToast'
+const {messages,remove,pause,resume}=useToast()
+</script>
+<template><Teleport to="body"><div class="toast-stack" aria-live="polite"><TransitionGroup name="toast"><div v-for="m in messages" :key="m.id" class="toast-item" :class="{error:m.error}" @mouseenter="pause(m.id)" @mouseleave="resume(m.id)"><component :is="m.error?CircleAlert:CheckCircle2" :size="18"/><span>{{m.text}}</span><button aria-label="关闭提示" @click="remove(m.id)"><X :size="14"/></button><i></i></div></TransitionGroup></div></Teleport></template>
+<style scoped>.toast-stack{position:fixed;bottom:28px;left:50%;transform:translateX(-50%);z-index:100;display:flex;flex-direction:column;gap:9px;max-width:calc(100vw - 24px)}.toast-item{position:relative;overflow:hidden;display:flex;align-items:center;gap:10px;border:1px solid var(--line);border-radius:11px;padding:14px 16px;background:var(--card);color:var(--text);box-shadow:var(--shadow);font-size:12px;white-space:nowrap}.toast-item>svg{color:#6ba48f}.error>svg{color:#d47e72}.toast-item button{display:grid;background:none;border:0;color:var(--muted);margin-left:12px}.toast-item i{position:absolute;bottom:0;left:0;height:2px;background:var(--accent);width:100%;animation:timer 4s linear forwards}.toast-item:hover i{animation-play-state:paused}@keyframes timer{to{width:0}}.toast-enter-active,.toast-leave-active{transition:.2s}.toast-enter-from,.toast-leave-to{opacity:0;transform:translateY(10px)}</style>

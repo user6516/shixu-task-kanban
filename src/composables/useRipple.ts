@@ -1,0 +1,1 @@
+export function useRipple() { return { ripple: (event: MouseEvent)=>{ const target=event.currentTarget as HTMLElement; target.animate([{transform:'scale(0.97)'},{transform:'scale(1)'}],{duration:160}) } } }
